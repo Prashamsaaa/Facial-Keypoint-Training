@@ -44,7 +44,7 @@ class FaceKeyPointData(Dataset):
         img = img.resize((self.model_input_size, self.model_input_size))  #VGG sanga use garna
         img = np.asarray(img)/255.0               #pixel value normalization i.e. normalize pixel values to be between 0 and 1
         img = torch.tensor(img).permute(2,0,1)  # transpose 
-        img = self.normalize(img)       #normalize using transforms.normalize to have mean = 0 and sd =1
+        img = self.normalize(img).float()     #normalize using transforms.normalize to have mean = 0 and sd =1
         # print(img)
         return img.to(self.device), original_size
     

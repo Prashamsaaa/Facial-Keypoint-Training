@@ -43,7 +43,6 @@ def train(n_epoch,train_dataloader,test_dataloader, model ,criterion, optimizer 
 
         # train 
         for images, kps in tqdm(train_dataloader, desc=f'Training {epoch} of {n_epoch}'):
-            # images, kps = 
             loss = train_batch(images, kps, model, criterion, optimizer)
             epoch_train_loss+= loss.item()
         epoch_train_loss /= len(train_dataloader)
@@ -59,17 +58,17 @@ def train(n_epoch,train_dataloader,test_dataloader, model ,criterion, optimizer 
         print(f"Epoch {epoch} of {n_epoch}: Training Loss: {epoch_train_loss}, Test Loss: {epoch_test_loss}")
     return train_loss, test_loss
 
-def plot_loss(train_loss, test_loss):
+def plot_loss(train_loss, test_loss, train_curve_path):
     epochs = np.arange(len(train_loss))
 
     plt.figure()
-    plt.plot(epochs, train_loss, 'b', label='Training Loss')
+    plt.plot(epochs, train_loss, 'b', label='Train Loss')
     plt.plot(epochs, test_loss, 'r', label='Test Loss')
-    plt.title("Training and Test Loss Curve Over Epochs")
-    plt.xlabel('Epochs')
-    plt.ylabel('L1 Loss')
+    plt.title("Train and Test Loss")
+    plt.xlabel("Epochs")
+    plt.ylabel("Loss")
     plt.legend()
-    plt.show()
+    plt.savefig(train_curve_path)
 
 def load_image(img_path, model_input_size, device):
     normalize = transforms.Normalize(
@@ -80,7 +79,7 @@ def load_image(img_path, model_input_size, device):
     original_size = img.size
 
     #preprocessing image 
-    img = img.resize(model_input_size, Image.Resampling.BILINEAR)
+    img = img.resize((model_input_size, model_input_size)) 
     img = img_disp = np.asarray(img) / 255.0
     img = torch.tensor(img).permute(2, 0, 1)    
     img = normalize(img).float()
@@ -99,7 +98,7 @@ def visualization(img_path, model, vis_result_path, model_input_size, device):
     plt.imshow(img_disp)
 
     kp_s = model(img_tensor[None]).flatten().detach().cpu()
-    plt.scatter(kp_s[:68] * model_input_size[0], kp_s[68:] * model_input_size[1], c='y', s=2)
+    plt.scatter(kp_s[:68] * model_input_size, kp_s[68:] * model_input_size, c='y', s=2)
     plt.savefig(vis_result_path)
 
 

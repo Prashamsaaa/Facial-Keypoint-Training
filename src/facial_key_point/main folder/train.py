@@ -4,7 +4,10 @@ import os
 from PIL import Image
 from tqdm import tqdm
 import json 
+import sys
 
+sys.path.append(os.path.abspath(os.path.join(os.getcwd(), '')))
+print(os.getcwd())
 #Datascience packages
 import pandas as pd
 import numpy as np
@@ -24,7 +27,7 @@ from src.facial_key_point.model.modified_vgg import get_model
 from src.facial_key_point.utils.utils import train, plot_loss,visualization
 
 def main():
-    saved_path = os.join(os.getcwd(), 'dump', configuration.get('saved_path'))
+    saved_path = os.path.join(os.getcwd(), 'dump', configuration.get('saved_path'))
     model_path = os.path.join(saved_path, 'model.pth')
     hyperparam_path = os.path.join(saved_path, 'hyperparam.json')
     train_curve_path = os.path.join(saved_path, 'train_curve.png')
@@ -45,12 +48,12 @@ def main():
     optimizer = torch.optim.Adam(model.parameters(), lr=configuration.get('learning_rate'))
 
     train_loss, test_loss = train(configuration.get('n_epoch'), train_dataloader,test_dataloader,model, criterion, optimizer)
-    plot_loss(train_loss, test_loss)
-    visualization('face.jpg', model, vis_result_path, configuration.get('model_input_size'), device)
+    plot_loss(train_loss, test_loss,train_curve_path)
+    torch.save(model, model_path)
 
+    visualization('face.jpg', model, vis_result_path, configuration.get('model_input_size'), device)
     with open(hyperparam_path, 'w') as f:
         json.dump(configuration, f)
-    torch.save(model, model_path)
 
 if __name__ =='__main__':
     main()
