@@ -21,16 +21,16 @@ This project features a facial key point detection system using a modified VGG16
 1. **Clone the Repository**:
 
    
-```
+   ```
    git clone https://github.com/Prashamsaaa/Facial-Keypoint-Training
    cd facial-key-point-detection
-```
+   ```
 
 2. **Install required packages**:
 
-```
+   ```
     pip install requirements.txt
-```
+   ```
 
 3. **Run the Streamlit Application**:
 
